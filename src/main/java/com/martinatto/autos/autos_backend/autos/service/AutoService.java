@@ -8,11 +8,14 @@ import com.martinatto.autos.autos_backend.autos.enums.TipoCombustible;
 import com.martinatto.autos.autos_backend.autos.enums.TipoTransmision;
 import com.martinatto.autos.autos_backend.autos.mapper.AutoMapper;
 import com.martinatto.autos.autos_backend.autos.repository.IAutoRepository;
+import com.martinatto.autos.autos_backend.shared.service.FileStorageService;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,13 +24,41 @@ import java.util.stream.Collectors;
 public class AutoService implements IAutoService {
 
     private final IAutoRepository autoRepo;
+    private final FileStorageService fileStorageService;
 
     @Override
-    public AutoResponseDTO crearAuto(AutoRequestDTO request) {
-        Auto auto = AutoMapper.toEntity(request);
-        Auto guardado = autoRepo.save(auto);
+    public AutoResponseDTO crearAuto(
+            String marca,
+            String modelo,
+            Integer anio,
+            String color,
+            Integer kilometraje,
+            BigDecimal precio,
+            EstadoAuto estado,
+            TipoTransmision transmision,
+            TipoCombustible combustible,
+            MultipartFile imagen
+    ) {
 
-        return AutoMapper.toDTO(guardado);
+        // Por ahora solamente comprobamos que la imagen llegue
+        String imagenUrl = fileStorageService.guardarImagen(imagen);
+
+        Auto auto = new Auto();
+
+        auto.setMarca(marca);
+        auto.setModelo(modelo);
+        auto.setAnio(anio);
+        auto.setColor(color);
+        auto.setKilometraje(kilometraje);
+        auto.setPrecio(precio);
+        auto.setEstado(estado);
+        auto.setTransmision(transmision);
+        auto.setCombustible(combustible);
+        auto.setImagenUrl(imagenUrl);
+
+        Auto autoGuardado = autoRepo.save(auto);
+
+        return AutoMapper.toDTO(autoGuardado);
     }
 
     @Override

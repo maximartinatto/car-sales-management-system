@@ -5,12 +5,25 @@ import com.martinatto.autos.autos_backend.autos.dto.AutoResponseDTO;
 import com.martinatto.autos.autos_backend.autos.enums.EstadoAuto;
 import com.martinatto.autos.autos_backend.autos.enums.TipoCombustible;
 import com.martinatto.autos.autos_backend.autos.enums.TipoTransmision;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface IAutoService {
     // crear auto
-    AutoResponseDTO crearAuto(AutoRequestDTO request);
+    AutoResponseDTO crearAuto(
+            String marca,
+            String modelo,
+            Integer anio,
+            String color,
+            Integer kilometraje,
+            BigDecimal precio,
+            EstadoAuto estado,
+            TipoTransmision transmision,
+            TipoCombustible combustible,
+            MultipartFile imagen
+    );
 
     // Obtener todos los autos
     List<AutoResponseDTO> obtenerTodos();

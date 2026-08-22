@@ -5,6 +5,9 @@ import com.martinatto.autos.autos_backend.autos.dto.AutoResponseDTO;
 import com.martinatto.autos.autos_backend.autos.enums.EstadoAuto;
 import com.martinatto.autos.autos_backend.autos.enums.TipoCombustible;
 import com.martinatto.autos.autos_backend.autos.enums.TipoTransmision;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
 import com.martinatto.autos.autos_backend.autos.service.IAutoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -13,22 +16,49 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/autos")
 @RequiredArgsConstructor
+
 public class AutoController {
 
     @Autowired
     private IAutoService autoServ;
 
-    @PostMapping
-    public ResponseEntity<AutoResponseDTO> crearAuto (@Valid @RequestBody AutoRequestDTO request) {
-        AutoResponseDTO autoCreado = autoServ.crearAuto(request);
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<AutoResponseDTO> crearAuto(
+            @RequestParam String marca,
+            @RequestParam String modelo,
+            @RequestParam Integer anio,
+            @RequestParam String color,
+            @RequestParam Integer kilometraje,
+            @RequestParam BigDecimal precio,
+            @RequestParam EstadoAuto estado,
+            @RequestParam TipoTransmision transmision,
+            @RequestParam TipoCombustible combustible,
+            @RequestPart("imagen") MultipartFile imagen
+    ) {
+
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(autoCreado);
+                .body(
+                        autoServ.crearAuto(
+                                marca,
+                                modelo,
+                                anio,
+                                color,
+                                kilometraje,
+                                precio,
+                                estado,
+                                transmision,
+                                combustible,
+                                imagen
+                        )
+                );
     }
 
     @GetMapping
