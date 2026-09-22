@@ -1,6 +1,6 @@
 package com.martinatto.autos.autos_backend.autos.service;
 
-import com.martinatto.autos.autos_backend.autos.dto.AutoRequestDTO;
+
 import com.martinatto.autos.autos_backend.autos.dto.AutoResponseDTO;
 import com.martinatto.autos.autos_backend.autos.entity.Auto;
 import com.martinatto.autos.autos_backend.autos.enums.EstadoAuto;
@@ -91,18 +91,41 @@ public class AutoService implements IAutoService {
     }
 
     @Override
-    public AutoResponseDTO actualizarAuto(Long id, AutoRequestDTO request) {
+    public AutoResponseDTO actualizarAuto(
+            Long id,
+            String marca,
+            String modelo,
+            Integer anio,
+            String color,
+            Integer kilometraje,
+            BigDecimal precio,
+            EstadoAuto estado,
+            TipoTransmision transmision,
+            TipoCombustible combustible,
+            MultipartFile imagen
+    ) {
+
         Auto auto = autoRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Auto no encontrado"));
 
-        auto.setMarca(request.getMarca());
-        auto.setModelo(request.getModelo());
-        auto.setAnio(request.getAnio());
-        auto.setPrecio(request.getPrecio());
-        auto.setEstado(request.getEstado());
-        auto.setCombustible(request.getCombustible());
-        auto.setTransmision(request.getTransmision());
-        auto.setImagenUrl(request.getImagenUrl());
+        auto.setMarca(marca);
+        auto.setModelo(modelo);
+        auto.setAnio(anio);
+        auto.setColor(color);
+        auto.setKilometraje(kilometraje);
+        auto.setPrecio(precio);
+        auto.setEstado(estado);
+        auto.setTransmision(transmision);
+        auto.setCombustible(combustible);
+
+        // La imagen es opcional al editar
+        if (imagen != null && !imagen.isEmpty()) {
+
+            String imagenUrl =
+                    fileStorageService.guardarImagen(imagen);
+
+            auto.setImagenUrl(imagenUrl);
+        }
 
         Auto actualizado = autoRepo.save(auto);
 

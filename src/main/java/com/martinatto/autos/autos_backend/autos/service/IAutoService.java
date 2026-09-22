@@ -1,6 +1,6 @@
 package com.martinatto.autos.autos_backend.autos.service;
 
-import com.martinatto.autos.autos_backend.autos.dto.AutoRequestDTO;
+
 import com.martinatto.autos.autos_backend.autos.dto.AutoResponseDTO;
 import com.martinatto.autos.autos_backend.autos.enums.EstadoAuto;
 import com.martinatto.autos.autos_backend.autos.enums.TipoCombustible;
@@ -35,7 +35,19 @@ public interface IAutoService {
     List<AutoResponseDTO> buscarAutos(String texto);
 
     // Actualizar auto
-    AutoResponseDTO actualizarAuto(Long id, AutoRequestDTO request);
+    AutoResponseDTO actualizarAuto(
+            Long id,
+            String marca,
+            String modelo,
+            Integer anio,
+            String color,
+            Integer kilometraje,
+            BigDecimal precio,
+            EstadoAuto estado,
+            TipoTransmision transmision,
+            TipoCombustible combustible,
+            MultipartFile imagen
+    );
 
     // Eliminar auto
     void eliminarAuto(Long id);

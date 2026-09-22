@@ -67,6 +67,7 @@ public class GlobalExceptionHandler extends RuntimeException {
             Exception ex,
             HttpServletRequest request
     ) {
+
         ErrorResponse error = new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
