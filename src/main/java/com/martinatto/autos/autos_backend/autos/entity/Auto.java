@@ -4,6 +4,7 @@ import com.martinatto.autos.autos_backend.autos.enums.EstadoAuto;
 import com.martinatto.autos.autos_backend.autos.enums.TipoCombustible;
 import com.martinatto.autos.autos_backend.autos.enums.TipoTransmision;
 import com.martinatto.autos.autos_backend.ventas.entity.Venta;
+import com.martinatto.autos.autos_backend.autos.enums.TipoRodado;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -41,6 +42,10 @@ public class Auto {
 
     @Column(nullable = false)
     private BigDecimal precio;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TipoRodado tipoRodado;
 
     @Enumerated(EnumType.STRING)
     private EstadoAuto estado;

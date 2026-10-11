@@ -6,6 +6,7 @@ import com.martinatto.autos.autos_backend.autos.entity.Auto;
 import com.martinatto.autos.autos_backend.autos.enums.EstadoAuto;
 import com.martinatto.autos.autos_backend.autos.enums.TipoCombustible;
 import com.martinatto.autos.autos_backend.autos.enums.TipoTransmision;
+import com.martinatto.autos.autos_backend.autos.enums.TipoRodado;
 import com.martinatto.autos.autos_backend.autos.mapper.AutoMapper;
 import com.martinatto.autos.autos_backend.autos.repository.IAutoRepository;
 import com.martinatto.autos.autos_backend.shared.service.FileStorageService;
@@ -34,6 +35,7 @@ public class AutoService implements IAutoService {
             String color,
             Integer kilometraje,
             BigDecimal precio,
+            TipoRodado tipoRodado,
             EstadoAuto estado,
             TipoTransmision transmision,
             TipoCombustible combustible,
@@ -51,6 +53,7 @@ public class AutoService implements IAutoService {
         auto.setColor(color);
         auto.setKilometraje(kilometraje);
         auto.setPrecio(precio);
+        auto.setTipoRodado(tipoRodado);
         auto.setEstado(estado);
         auto.setTransmision(transmision);
         auto.setCombustible(combustible);
@@ -99,6 +102,7 @@ public class AutoService implements IAutoService {
             String color,
             Integer kilometraje,
             BigDecimal precio,
+            TipoRodado tipoRodado,
             EstadoAuto estado,
             TipoTransmision transmision,
             TipoCombustible combustible,
@@ -114,6 +118,7 @@ public class AutoService implements IAutoService {
         auto.setColor(color);
         auto.setKilometraje(kilometraje);
         auto.setPrecio(precio);
+        auto.setTipoRodado(tipoRodado);
         auto.setEstado(estado);
         auto.setTransmision(transmision);
         auto.setCombustible(combustible);
@@ -172,6 +177,14 @@ public class AutoService implements IAutoService {
     @Transactional(readOnly = true)
     public List<AutoResponseDTO> obtenerPorTransmision(TipoTransmision transmision) {
         return autoRepo.findByTransmision(transmision)
+                .stream()
+                .map(AutoMapper::toDTO)
+                .toList();
+    }
+
+    @Override
+    public List<AutoResponseDTO> obtenerPorTipoRodado(TipoRodado tipoRodado) {
+        return autoRepo.findByTipoRodado(tipoRodado)
                 .stream()
                 .map(AutoMapper::toDTO)
                 .toList();

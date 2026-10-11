@@ -43,7 +43,13 @@ public class VentaService implements IVentaService {
 
         if (auto.getEstado() != EstadoAuto.DISPONIBLE) {
             throw new IllegalStateException(
-                    "El auto debe estar disponible para poder venderse"
+                    "El vehículo no está disponible para una nueva venta"
+            );
+        }
+
+        if (request.getEstado() == EstadoVenta.CANCELADA) {
+            throw new IllegalArgumentException(
+                    "No se puede crear una venta directamente como CANCELADA"
             );
         }
 
@@ -51,20 +57,13 @@ public class VentaService implements IVentaService {
         venta.setAuto(auto);
         venta.setCliente(cliente);
 
-        /*
-         * Como la creación representa una venta confirmada,
-         * el backend establece el estado final.
-         */
-        venta.setEstado(EstadoVenta.FINALIZADA);
-        auto.setEstado(EstadoAuto.VENDIDO);
+        if (request.getEstado() == EstadoVenta.EN_PROCESO) {
+            auto.setEstado(EstadoAuto.RESERVADO);
+        } else if (request.getEstado() == EstadoVenta.FINALIZADA) {
+            auto.setEstado(EstadoAuto.VENDIDO);
+        }
 
         Venta ventaGuardada = ventaRepo.save(venta);
-
-        /*
-         * No es indispensable llamar autoRepo.save(auto), porque el Auto
-         * está administrado dentro de la transacción. Hibernate detectará
-         * el cambio de estado mediante dirty checking.
-         */
 
         return VentaMapper.toDTO(ventaGuardada);
     }
@@ -98,13 +97,27 @@ public class VentaService implements IVentaService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Venta no encontrada"));
 
-        venta.setPrecioFinal(request.getPrecioFinal());
-        venta.setEstado(request.getEstado());
+        EstadoVenta estadoActual = venta.getEstado();
+        EstadoVenta nuevoEstado = request.getEstado();
 
-        /*
-         * No conviene reemplazar fecha con LocalDateTime.now():
-         * fecha representa cuándo se realizó la venta.
-         */
+        if (estadoActual != EstadoVenta.EN_PROCESO) {
+            throw new IllegalStateException(
+                    "Solo se pueden modificar ventas EN_PROCESO"
+            );
+        }
+
+        Auto auto = venta.getAuto();
+
+        if (nuevoEstado == EstadoVenta.FINALIZADA) {
+            auto.setEstado(EstadoAuto.VENDIDO);
+        } else if (nuevoEstado == EstadoVenta.CANCELADA) {
+            auto.setEstado(EstadoAuto.DISPONIBLE);
+        } else {
+            auto.setEstado(EstadoAuto.RESERVADO);
+        }
+
+        venta.setPrecioFinal(request.getPrecioFinal());
+        venta.setEstado(nuevoEstado);
 
         Venta ventaActualizada = ventaRepo.save(venta);
 
@@ -114,17 +127,15 @@ public class VentaService implements IVentaService {
     @Override
     @Transactional
     public void eliminarVenta(Long id) {
+
         Venta venta = ventaRepo.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Venta no encontrada"));
 
-        /*
-         * Si se elimina una venta finalizada, el auto vuelve a estar
-         * disponible. Esta regla puede cambiar si preferís no permitir
-         * borrar ventas y usar solamente CANCELADA.
-         */
-        if (venta.getAuto() != null) {
-            venta.getAuto().setEstado(EstadoAuto.DISPONIBLE);
+        if (venta.getEstado() != EstadoVenta.CANCELADA) {
+            throw new IllegalStateException(
+                    "Solo se pueden eliminar ventas canceladas"
+            );
         }
 
         ventaRepo.delete(venta);

@@ -7,6 +7,7 @@ import com.martinatto.autos.autos_backend.solicitudes.enums.EstadoSolicitud;
 import com.martinatto.autos.autos_backend.solicitudes.service.ISolicitudAutoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import com.martinatto.autos.autos_backend.solicitudes.dto.SolicitudPublicaRequestDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +32,17 @@ public class SolicitudAutoController {
                 .status(HttpStatus.CREATED)
                 .body(solicitudCreada);
     }
+
+
+    @PostMapping("/publica")
+    public ResponseEntity<Void> crearSolicitudPublica(
+            @Valid @RequestBody SolicitudPublicaRequestDTO request
+    ) {
+        solicitudService.crearSolicitudPublica(request);
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
 
     @GetMapping
     public ResponseEntity<List<SolicitudAutoResponseDTO>> obtenerTodas() {

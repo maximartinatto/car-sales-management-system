@@ -15,6 +15,7 @@ public class AutoMapper {
         auto.setColor(dto.getColor());
         auto.setKilometraje(dto.getKilometraje());
         auto.setPrecio(dto.getPrecio());
+        auto.setTipoRodado(dto.getTipoRodado());
         auto.setEstado(dto.getEstado());
         auto.setCombustible(dto.getCombustible());
         auto.setTransmision(dto.getTransmision());
@@ -32,6 +33,7 @@ public class AutoMapper {
         dto.setColor(auto.getColor());
         dto.setKilometraje(auto.getKilometraje());
         dto.setPrecio(auto.getPrecio());
+        dto.setTipoRodado(auto.getTipoRodado());
         dto.setEstado(auto.getEstado());
         dto.setCombustible(auto.getCombustible());
         dto.setTransmision(auto.getTransmision());

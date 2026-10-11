@@ -4,6 +4,7 @@ import com.martinatto.autos.autos_backend.autos.dto.AutoResponseDTO;
 import com.martinatto.autos.autos_backend.autos.enums.EstadoAuto;
 import com.martinatto.autos.autos_backend.autos.enums.TipoCombustible;
 import com.martinatto.autos.autos_backend.autos.enums.TipoTransmision;
+import com.martinatto.autos.autos_backend.autos.enums.TipoRodado;
 import com.martinatto.autos.autos_backend.autos.service.IAutoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -44,6 +45,8 @@ public class AutoController {
 
             @RequestParam BigDecimal precio,
 
+            @RequestParam TipoRodado tipoRodado,
+
             @RequestParam EstadoAuto estado,
 
             @RequestParam TipoTransmision transmision,
@@ -64,6 +67,7 @@ public class AutoController {
                                 color,
                                 kilometraje,
                                 precio,
+                                tipoRodado,
                                 estado,
                                 transmision,
                                 combustible,
@@ -175,6 +179,19 @@ public class AutoController {
         );
     }
 
+    // =========================
+    // FILTRAR POR TIPO DE RODADO
+    // =========================
+
+    @GetMapping("/tipo-rodado/{tipoRodado}")
+    public ResponseEntity<List<AutoResponseDTO>> obtenerPorTipoRodado(
+            @PathVariable TipoRodado tipoRodado
+    ) {
+        return ResponseEntity.ok(
+                autoServ.obtenerPorTipoRodado(tipoRodado)
+        );
+    }
+
 
     // =========================
     // EDITAR AUTO
@@ -200,6 +217,8 @@ public class AutoController {
 
             @RequestParam BigDecimal precio,
 
+            @RequestParam TipoRodado tipoRodado,
+
             @RequestParam EstadoAuto estado,
 
             @RequestParam TipoTransmision transmision,
@@ -223,6 +242,7 @@ public class AutoController {
                         color,
                         kilometraje,
                         precio,
+                        tipoRodado,
                         estado,
                         transmision,
                         combustible,

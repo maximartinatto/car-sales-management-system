@@ -5,6 +5,7 @@ import com.martinatto.autos.autos_backend.autos.dto.AutoResponseDTO;
 import com.martinatto.autos.autos_backend.autos.enums.EstadoAuto;
 import com.martinatto.autos.autos_backend.autos.enums.TipoCombustible;
 import com.martinatto.autos.autos_backend.autos.enums.TipoTransmision;
+import com.martinatto.autos.autos_backend.autos.enums.TipoRodado;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
@@ -19,6 +20,7 @@ public interface IAutoService {
             String color,
             Integer kilometraje,
             BigDecimal precio,
+            TipoRodado tipoRodado,
             EstadoAuto estado,
             TipoTransmision transmision,
             TipoCombustible combustible,
@@ -43,6 +45,7 @@ public interface IAutoService {
             String color,
             Integer kilometraje,
             BigDecimal precio,
+            TipoRodado tipoRodado,
             EstadoAuto estado,
             TipoTransmision transmision,
             TipoCombustible combustible,
@@ -63,5 +66,7 @@ public interface IAutoService {
 
     // Obtener auto por transmision
     List<AutoResponseDTO> obtenerPorTransmision(TipoTransmision transmision);
+    // Obtener vehiculo por tipo de rodado
+    List<AutoResponseDTO> obtenerPorTipoRodado(TipoRodado tipoRodado);
 
 }

@@ -2,6 +2,7 @@ package com.martinatto.autos.autos_backend.autos.repository;
 
 import com.martinatto.autos.autos_backend.autos.entity.Auto;
 import com.martinatto.autos.autos_backend.autos.enums.EstadoAuto;
+import com.martinatto.autos.autos_backend.autos.enums.TipoRodado;
 import com.martinatto.autos.autos_backend.autos.enums.TipoCombustible;
 import com.martinatto.autos.autos_backend.autos.enums.TipoTransmision;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,6 +21,8 @@ public interface IAutoRepository extends JpaRepository<Auto, Long> {
     List<Auto> findByCombustible(TipoCombustible combustible);
 
     List<Auto> findByTransmision(TipoTransmision transmision);
+
+    List<Auto> findByTipoRodado(TipoRodado tipoRodado);
 
     Long countByEstado(EstadoAuto estadoAuto);
 }

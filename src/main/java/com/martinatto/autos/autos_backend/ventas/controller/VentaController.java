@@ -51,7 +51,7 @@ public class VentaController {
 
     @GetMapping("/estado/{estado}")
     public ResponseEntity<List<VentaResponseDTO>> obtenerPorEstado(
-            @PathVariable EstadoVenta estadoVenta
+            @PathVariable("estado") EstadoVenta estadoVenta
     ) {
         return ResponseEntity.ok(
                 ventaServ.obtenerVentasPorEstado(estadoVenta)

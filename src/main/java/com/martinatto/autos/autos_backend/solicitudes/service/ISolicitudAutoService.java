@@ -4,6 +4,7 @@ import com.martinatto.autos.autos_backend.solicitudes.dto.EstadoSolicitudRequest
 import com.martinatto.autos.autos_backend.solicitudes.dto.SolicitudAutoRequestDTO;
 import com.martinatto.autos.autos_backend.solicitudes.dto.SolicitudAutoResponseDTO;
 import com.martinatto.autos.autos_backend.solicitudes.enums.EstadoSolicitud;
+import com.martinatto.autos.autos_backend.solicitudes.dto.SolicitudPublicaRequestDTO;
 
 import java.util.List;
 
@@ -23,4 +24,6 @@ public interface ISolicitudAutoService {
     SolicitudAutoResponseDTO actualizarEstado(Long id, EstadoSolicitudRequestDTO requestDTO);
 
     void eliminarSolicitud(Long id);
+
+    void crearSolicitudPublica(SolicitudPublicaRequestDTO request);
 }

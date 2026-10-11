@@ -3,6 +3,7 @@ package com.martinatto.autos.autos_backend.autos.dto;
 import com.martinatto.autos.autos_backend.autos.enums.EstadoAuto;
 import com.martinatto.autos.autos_backend.autos.enums.TipoCombustible;
 import com.martinatto.autos.autos_backend.autos.enums.TipoTransmision;
+import com.martinatto.autos.autos_backend.autos.enums.TipoRodado;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
@@ -38,6 +39,9 @@ public class AutoRequestDTO {
     @NotNull(message = "El precio es obligatorio")
     @Positive(message = "El precio debe ser mayor a cero")
     private BigDecimal precio;
+
+    @NotNull(message = "El tipo de auto es obligatorio")
+    private TipoRodado tipoRodado;
 
     @NotNull(message = "El estado es obligatorio")
     private EstadoAuto estado;

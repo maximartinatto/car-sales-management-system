@@ -9,6 +9,9 @@ import com.martinatto.autos.autos_backend.solicitudes.dto.SolicitudAutoResponseD
 import com.martinatto.autos.autos_backend.solicitudes.entity.SolicitudAuto;
 import com.martinatto.autos.autos_backend.solicitudes.enums.EstadoSolicitud;
 import com.martinatto.autos.autos_backend.solicitudes.mapper.SolicitudAutoMapper;
+import com.martinatto.autos.autos_backend.solicitudes.dto.DatosClienteDTO;
+import com.martinatto.autos.autos_backend.solicitudes.dto.SolicitudPublicaRequestDTO;
+import com.martinatto.autos.autos_backend.solicitudes.dto.SolicitudVehiculoPublicaDTO;
 import com.martinatto.autos.autos_backend.solicitudes.repository.ISolicitudAutoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -37,6 +40,49 @@ public class SolicitudAutoService implements ISolicitudAutoService{
 
         SolicitudAuto solicitudGuardada = solicitudAutoRepo.save(solicitudAuto);
         return SolicitudAutoMapper.toDTO(solicitudGuardada);
+    }
+
+    @Transactional
+    public void crearSolicitudPublica(SolicitudPublicaRequestDTO request) {
+        DatosClienteDTO datosCliente = request.getCliente();
+        SolicitudVehiculoPublicaDTO datosSolicitud = request.getSolicitud();
+
+        if (datosSolicitud.getAnioDesde() > datosSolicitud.getAnioHasta()) {
+            throw new IllegalArgumentException(
+                    "El año mínimo no puede ser mayor que el año máximo"
+            );
+        }
+
+        String dni = datosCliente.getDni().trim();
+
+        Cliente cliente = clientesRepo.findByDni(dni)
+                .orElseGet(() -> {
+                    Cliente nuevoCliente = Cliente.builder()
+                            .nombre(datosCliente.getNombre())
+                            .apellido(datosCliente.getApellido())
+                            .dni(dni)
+                            .telefono(datosCliente.getTelefono())
+                            .email(datosCliente.getEmail())
+                            .build();
+
+                    return clientesRepo.save(nuevoCliente);
+                });
+        SolicitudAutoRequestDTO solicitudDTO =
+                new SolicitudAutoRequestDTO();
+
+        solicitudDTO.setMarca(datosSolicitud.getMarca());
+        solicitudDTO.setModelo(datosSolicitud.getModelo());
+        solicitudDTO.setAnioDesde(datosSolicitud.getAnioDesde());
+        solicitudDTO.setAnioHasta(datosSolicitud.getAnioHasta());
+        solicitudDTO.setColorPreferido(datosSolicitud.getColorPreferido());
+        solicitudDTO.setKilometrajeMaximo(datosSolicitud.getKilometrajeMaximo());
+        solicitudDTO.setPresupuestoMaximo(datosSolicitud.getPresupuestoMaximo());
+        solicitudDTO.setTransmision(datosSolicitud.getTransmision());
+        solicitudDTO.setCombustible(datosSolicitud.getCombustible());
+        solicitudDTO.setClienteId(cliente.getId());
+
+        crearSolicitud(solicitudDTO);
+
     }
 
     @Override
