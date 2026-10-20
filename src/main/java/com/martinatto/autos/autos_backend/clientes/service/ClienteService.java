@@ -1,3 +1,4 @@
+
 package com.martinatto.autos.autos_backend.clientes.service;
 
 import com.martinatto.autos.autos_backend.clientes.dto.ClienteRequestDTO;
@@ -5,7 +6,10 @@ import com.martinatto.autos.autos_backend.clientes.dto.ClienteResponseDTO;
 import com.martinatto.autos.autos_backend.clientes.entity.Cliente;
 import com.martinatto.autos.autos_backend.clientes.mapper.ClienteMapper;
 import com.martinatto.autos.autos_backend.clientes.repository.IClientesRepository;
+import com.martinatto.autos.autos_backend.solicitudes.repository.ISolicitudAutoRepository;
+import com.martinatto.autos.autos_backend.ventas.repository.IVentaRepository;
 import com.martinatto.autos.autos_backend.shared.exception.ResourceNotFoundException;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,10 +21,13 @@ import java.util.List;
 public class ClienteService implements IClienteService {
 
     private final IClientesRepository clienteRepo;
+    private final IVentaRepository ventaRepo;
+    private final ISolicitudAutoRepository solicitudRepo;
 
     @Override
     @Transactional
     public ClienteResponseDTO crearCliente(ClienteRequestDTO request) {
+
         Cliente cliente = ClienteMapper.toEntity(request);
         Cliente clienteGuardado = clienteRepo.save(cliente);
 
@@ -30,6 +37,7 @@ public class ClienteService implements IClienteService {
     @Override
     @Transactional(readOnly = true)
     public List<ClienteResponseDTO> obtenerTodos() {
+
         return clienteRepo.findAll()
                 .stream()
                 .map(ClienteMapper::toDTO)
@@ -39,6 +47,7 @@ public class ClienteService implements IClienteService {
     @Override
     @Transactional(readOnly = true)
     public ClienteResponseDTO obtenerClientePorId(Long id) {
+
         Cliente cliente = clienteRepo.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Cliente no encontrado")
@@ -53,6 +62,7 @@ public class ClienteService implements IClienteService {
             Long id,
             ClienteRequestDTO request
     ) {
+
         Cliente cliente = clienteRepo.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Cliente no encontrado")
@@ -72,11 +82,25 @@ public class ClienteService implements IClienteService {
     @Override
     @Transactional
     public void eliminarCliente(Long id) {
+
         Cliente cliente = clienteRepo.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Cliente no encontrado")
                 );
 
+        if (ventaRepo.existsByClienteId(id)) {
+            throw new IllegalStateException(
+                    "No se puede eliminar el cliente porque tiene ventas asociadas."
+            );
+        }
+
+        if (solicitudRepo.existsByClienteId(id)) {
+            throw new IllegalStateException(
+                    "No se puede eliminar el cliente porque tiene solicitudes asociadas."
+            );
+        }
+
         clienteRepo.delete(cliente);
+        clienteRepo.flush();
     }
 }

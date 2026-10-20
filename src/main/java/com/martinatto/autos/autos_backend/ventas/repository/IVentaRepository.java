@@ -15,6 +15,8 @@ import java.util.List;
 public interface IVentaRepository extends JpaRepository<Venta, Long> {
     List<Venta> findByClienteId(Long clienteId);
 
+    boolean existsByClienteId(Long clienteId);
+
     List<Venta> findByEstado(EstadoVenta estadoVenta);
 
     List<Venta> findByFechaBetween(

@@ -1,3 +1,4 @@
+
 package com.martinatto.autos.autos_backend.solicitudes.repository;
 
 import com.martinatto.autos.autos_backend.solicitudes.entity.SolicitudAuto;
@@ -11,9 +12,12 @@ public interface ISolicitudAutoRepository
 
     List<SolicitudAuto> findByClienteId(Long clienteId);
 
+    boolean existsByClienteId(Long clienteId);
+
     List<SolicitudAuto> findByEstadoSolicitud(
             EstadoSolicitud estadoSolicitud
     );
 
     Long countByEstadoSolicitud(EstadoSolicitud estadoSolicitud);
 }
+
